@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
 
+//TODO: Add (or correct) relationship with other entities, such as Patient and "OrdenEstudio"
 @Entity
 @Table(name = "orders") 
 public class Orders {
@@ -18,23 +19,33 @@ public class Orders {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "pacient_id", nullable = false)
-    private Pacient pacient;
+    @JoinColumn(name = "patient_id", nullable = false)
+    private Patient patient;
 
     @ManyToOne
-    @JoinColumn(name = "laboratorista_id", nullable = false)
-    private Employees employee;
+    @JoinColumn(name = "lab_technician_id", nullable = false)
+    private LabTechnician labTechnician;
 
     @Column(name = "requestDateTime", nullable = false, updatable = false)
     private LocalDateTime requestDateTime = LocalDateTime.now();
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "order_status_id", referencedColumnName = "order_status_id")
+    private OrderStatus orderStatus;
+
+    @Column
+    private String notes;
+
     public Orders() {}
 
-    public Orders(Long id, Pacient pacient, Employees employee, LocalDateTime requestDateTime) {
+    public Orders(Long id, Patient patient, LabTechnician labTechnician, LocalDateTime requestDateTime,
+            OrderStatus orderStatus, String notes) {
         this.id = id;
-        this.pacient = pacient;
-        this.employee = employee;
+        this.patient = patient;
+        this.labTechnician = labTechnician;
         this.requestDateTime = requestDateTime;
+        this.orderStatus = orderStatus;
+        this.notes = notes;
     }
 
     public Long getId() {
@@ -45,20 +56,20 @@ public class Orders {
         this.id = id;
     }
 
-    public Pacient getPacient() {
-        return pacient;
+    public Patient getPatient() {
+        return patient;
     }
 
-    public void setPacient(Pacient pacient) {
-        this.pacient = pacient;
+    public void setPatient(Patient patient) {
+        this.patient = patient;
     }
 
-    public Employees getEmployee() {
-        return employee;
+    public LabTechnician getLabTechnician() {
+        return labTechnician;
     }
 
-    public void setEmployee(Employees employee) {
-        this.employee = employee;
+    public void setLabTechnician(LabTechnician labTechnician) {
+        this.labTechnician = labTechnician;
     }
 
     public LocalDateTime getRequestDateTime() {
@@ -68,4 +79,21 @@ public class Orders {
     public void setRequestDateTime(LocalDateTime requestDateTime) {
         this.requestDateTime = requestDateTime;
     }
+
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
 }
