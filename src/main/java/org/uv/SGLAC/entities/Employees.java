@@ -1,4 +1,4 @@
-package org.uv.SGLAC.model;
+package org.uv.SGLAC.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,16 +29,13 @@ public class Employees implements Serializable {
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = true)
     private User user;
     
-    @Column
-    private Address address;
     
     @Column(unique = true, nullable = false)
     private String employeeNumber;
 
-    public Employees(Long id, User user, Address address, String employeeNumber) {
+    public Employees(Long id, User user, String employeeNumber) {
         this.id = id;
         this.user = user;
-        this.address = address;
         this.employeeNumber = employeeNumber;
     }
 
@@ -56,14 +53,6 @@ public class Employees implements Serializable {
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    public Address getAddress() {
-        return address;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
     }
 
     public String getEmployeeNumber() {

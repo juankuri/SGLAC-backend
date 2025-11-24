@@ -1,4 +1,4 @@
-package org.uv.SGLAC.model;
+package org.uv.SGLAC.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -28,15 +28,40 @@ public class Pacient implements Serializable {
 
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = true)
-    private User user;
-
-    @Column(name = "dateOfBirth", nullable = false, updatable = false)
-    private LocalDateTime dateOfBirth = LocalDateTime.now();
-
-    @Column
-    private Sex sex;
+    private User user;    
 
     @Column(unique = true, nullable = false)
     private String recordNumber; //it works as a number to identify someone in the medical field (numero de expediente clinico)
 
+    public Pacient(Long id, User user, String recordNumber) {
+        this.id = id;
+        this.user = user;
+        this.recordNumber = recordNumber;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public String getRecordNumber() {
+        return recordNumber;
+    }
+
+    public void setRecordNumber(String recordNumber) {
+        this.recordNumber = recordNumber;
+    }
+
+    
 }

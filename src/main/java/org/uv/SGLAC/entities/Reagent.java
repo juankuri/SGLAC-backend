@@ -1,4 +1,4 @@
-package org.uv.SGLAC.model;
+package org.uv.SGLAC.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Column;
