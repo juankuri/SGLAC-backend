@@ -6,94 +6,66 @@ import jakarta.persistence.Embeddable;
 @Embeddable
 public class Address {
 
-    @Column(length = 100)
+    @Column(name = "street")
     private String street;
 
-    @Column(length = 10)
-    private String number;
+    @Column(name = "ext_number")
+    private String externalNumber;
 
-    @Column(length = 100)
-    private String neighborhood;
+    @Column(name = "int_number")
+    private String internalNumber; // opcional
 
-    @Column(length = 100)
-    private String city;
+    @Column(name = "colony")
+    private String colony;
 
-    @Column(length = 100)
-    private String state;
-
-    @Column(length = 10)
+    @Column(name = "postal_code")
     private String postalCode;
 
-    @Column(length = 100)
-    private String country;
+    @Column(name = "municipality")
+    private String municipality; // municipio / alcaldía
 
-    public Address() {
-    }
+    @Column(name = "state")
+    private String state; // Puedes poner Enum si quieres
 
-    public Address(String street, String number, String neighborhood, String city, String state, String postalCode, String country) {
+    @Column(name = "country")
+    private String country = "México";
+
+    public Address() {}
+
+    public Address(String street, String externalNumber, String internalNumber,
+                   String colony, String postalCode, String municipality,
+                   String state) {
         this.street = street;
-        this.number = number;
-        this.neighborhood = neighborhood;
-        this.city = city;
-        this.state = state;
+        this.externalNumber = externalNumber;
+        this.internalNumber = internalNumber;
+        this.colony = colony;
         this.postalCode = postalCode;
-        this.country = country;
-    }
-
-    public String getStreet() {
-        return street;
-    }
-
-    public void setStreet(String street) {
-        this.street = street;
-    }
-
-    public String getNumber() {
-        return number;
-    }
-
-    public void setNumber(String number) {
-        this.number = number;
-    }
-
-    public String getNeighborhood() {
-        return neighborhood;
-    }
-
-    public void setNeighborhood(String neighborhood) {
-        this.neighborhood = neighborhood;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
+        this.municipality = municipality;
         this.state = state;
     }
 
-    public String getPostalCode() {
-        return postalCode;
-    }
+    // Getters & setters
+    public String getStreet() { return street; }
+    public void setStreet(String street) { this.street = street; }
 
-    public void setPostalCode(String postalCode) {
-        this.postalCode = postalCode;
-    }
+    public String getExternalNumber() { return externalNumber; }
+    public void setExternalNumber(String externalNumber) { this.externalNumber = externalNumber; }
 
-    public String getCountry() {
-        return country;
-    }
+    public String getInternalNumber() { return internalNumber; }
+    public void setInternalNumber(String internalNumber) { this.internalNumber = internalNumber; }
 
-    public void setCountry(String country) {
-        this.country = country;
-    }
+    public String getColony() { return colony; }
+    public void setColony(String colony) { this.colony = colony; }
 
+    public String getPostalCode() { return postalCode; }
+    public void setPostalCode(String postalCode) { this.postalCode = postalCode; }
+
+    public String getMunicipality() { return municipality; }
+    public void setMunicipality(String municipality) { this.municipality = municipality; }
+
+    public String getState() { return state; }
+    public void setState(String state) { this.state = state; }
+
+    public String getCountry() { return country; }
+    public void setCountry(String country) { this.country = country; }
 }
