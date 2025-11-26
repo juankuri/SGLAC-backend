@@ -22,7 +22,7 @@ public class OTPCode implements Serializable {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JoinColumn(name = "user_id_fk", referencedColumnName = "user_id") // Foreign key to User entity
     private User user;
 
     @Column

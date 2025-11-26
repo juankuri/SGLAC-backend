@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
@@ -22,8 +24,12 @@ public class StudyParameter {
             allocationSize = 1)
     private Long id;
 
-    //TODO: Add relationships to Study and Parameter entities
+    @ManyToOne
+    @JoinColumn(name = "study_id_fk", referencedColumnName = "study_id") // Foreign key to Study entity
     private Long studyId;
+
+    @ManyToOne
+    @JoinColumn(name = "paremeter_id_fk", referencedColumnName = "paremeter_id") // Foreign key to Parameter entity
     private Long parameterId;
 
     //TODO: "NOTES" field MUST BE DELLETED FROM DATA MODEL 
