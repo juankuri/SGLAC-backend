@@ -23,8 +23,37 @@ public class StudyParameter {
     private Long id;
 
     //TODO: Add relationships to Study and Parameter entities
-    private int studyId;
-    private int parameterId;
+    private Long studyId;
+    private Long parameterId;
 
     //TODO: "NOTES" field MUST BE DELLETED FROM DATA MODEL 
+
+    public StudyParameter() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getStudyId() {
+        return studyId;
+    }
+
+    public void setStudyId(Long studyId) {
+        this.studyId = studyId;
+    }
+
+    public Long getParameterId() {
+        return parameterId;
+    }
+
+    public void setParameterId(Long parameterId) {
+        this.parameterId = parameterId;
+    }
+
+    
 }
