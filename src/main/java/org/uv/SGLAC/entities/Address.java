@@ -3,6 +3,7 @@ package org.uv.SGLAC.entities;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
+//TODO: ADD table to data model diagram
 @Embeddable
 public class Address {
 

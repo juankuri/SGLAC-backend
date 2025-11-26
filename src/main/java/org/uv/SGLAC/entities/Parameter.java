@@ -2,6 +2,7 @@ package org.uv.SGLAC.entities;
 
 import jakarta.persistence.*;
 
+//TODO: add constraints and relationships to Results, StudyParameter, ParameterRange entities
 @Entity
 @Table(name = "parameters")
 public class Parameter {

@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
+//TODO: Add relationships to Parameter and StudyParameter entities
 @Table
 @Entity(name="parameter_ranges")
 public class ParameterRange {
