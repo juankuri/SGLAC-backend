@@ -24,11 +24,37 @@ public class ParameterRange {
     private Long id;
 
     @Column(nullable = false)
-    private String unit;
-
-    @Column(nullable = false)
     private float minValue;
 
     @Column(nullable = false)
     private float maxValue;
+
+    public ParameterRange() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public float getMinValue() {
+        return minValue;
+    }
+
+    public void setMinValue(float minValue) {
+        this.minValue = minValue;
+    }
+
+    public float getMaxValue() {
+        return maxValue;
+    }
+
+    public void setMaxValue(float maxValue) {
+        this.maxValue = maxValue;
+    }
+
+    
 }

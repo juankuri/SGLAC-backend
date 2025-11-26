@@ -18,6 +18,9 @@ public class Parameter {
     @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
+    private String unit;
+
     public Parameter() {}
 
     public Long getId() {
