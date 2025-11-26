@@ -17,14 +17,6 @@ public class Parameter {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private String unit;
-    private Double minValue;
-    private Double maxValue;
-
-    @Column(nullable = true)
-    private boolean isActive;
-
     public Parameter() {}
 
     public Long getId() {
@@ -43,37 +35,4 @@ public class Parameter {
         this.name = name;
     }
 
-    public String getUnit() {
-        return unit;
-    }
-
-    public void setUnit(String unit) {
-        this.unit = unit;
-    }
-
-    public Double getMinValue() {
-        return minValue;
-    }
-
-    public void setMinValue(Double minValue) {
-        this.minValue = minValue;
-    }
-
-    public Double getMaxValue() {
-        return maxValue;
-    }
-
-    public void setMaxValue(Double maxValue) {
-        this.maxValue = maxValue;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean isActive) {
-        this.isActive = isActive;
-    }
-
-    
 }
