@@ -6,6 +6,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.persistence.*;
 
+//TODO: Verify relationships and constraints
+//note: TestOrder has been changed to OrderStatus
 @Entity
 @Table(name = "results")
 public class Result {
@@ -19,8 +21,12 @@ public class Result {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "test_order_id", nullable = false)
-    private TestOrder testOrder;
+    @JoinColumn(name = "order_status_id", nullable = false)
+    private OrderStatus orderStatus;
+
+    @ManyToOne
+    @JoinColumn(name = "parameter_id", nullable = false)
+    private Parameter parameter;
 
     @Column(nullable = false)
     private String value;
@@ -35,9 +41,6 @@ public class Result {
     @Column(nullable = true)
     private String notes;
 
-    @ManyToOne
-    @JoinColumn(name = "parameter_id", nullable = false)
-    private Parameter parameter;
 
     
     public Result() {}
@@ -50,16 +53,6 @@ public class Result {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-
-    public TestOrder getTestOrder() {
-        return testOrder;
-    }
-
-
-    public void setTestOrder(TestOrder testOrder) {
-        this.testOrder = testOrder;
     }
 
 
@@ -110,6 +103,16 @@ public class Result {
 
     public void setParameter(Parameter parameter) {
         this.parameter = parameter;
+    }
+
+
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
+    }
+
+
+    public void setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
     }
 
 }
