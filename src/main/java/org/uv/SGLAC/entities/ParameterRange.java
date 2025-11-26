@@ -23,6 +23,9 @@ public class ParameterRange {
     private Long id;
 
     @Column(nullable = false)
+    private String unit;
+
+    @Column(nullable = false)
     private float minValue;
 
     @Column(nullable = false)
