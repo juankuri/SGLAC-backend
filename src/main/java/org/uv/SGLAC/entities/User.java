@@ -8,8 +8,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Size;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -28,35 +31,40 @@ public class User implements Serializable {
             allocationSize = 1)
     private Long id;
 
-//    @OneToOne
-//    @JoinColumn(name = "pacient_id", referencedColumnName = "id", nullable = true)
-//    private Pacient pacient;
-    @Column
+    @OneToOne
+    @JoinColumn(
+            name = "patient_id_fk",
+            referencedColumnName = "patient_id")
+    private Patient patient;
+   
+    @Column(nullable = false, length = 50)
     private String names;
 
-    @Column
+    @Column(nullable = false)
+    @Size(min = 3, max = 50)
     private String lastname;
 
-    @Column
+    @Column(nullable = false, length = 30, unique = true)
     private String username;
 
-    @Column
+    @Column(nullable = false, unique = true, length = 150)
     private String email;
     
-    @Column
+    @Column(nullable = false)
     private String password;
 
-    @Column
+    @Column(unique = true)
     private String phoneNumber;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "rol_id", referencedColumnName = "id_rol")
+    @JoinColumn(name = "role_id_fk", referencedColumnName = "role_id")
     private Role role;
 
+    //TODO: Create/Correct Address and Sex entities
     @Column
     private Address address;
 
-    @Column
+    @Column(nullable = false)
     private Sex sex;
 
     @Column(name = "dateOfBirth", nullable = false, updatable = false)

@@ -38,81 +38,64 @@ public class Result {
     @Column(nullable = false)
     private boolean isValidated = false;
 
-    @Column(nullable = true)
+    @Column(nullable = true, columnDefinition = "TEXT")
     private String notes;
-
-
     
     public Result() {}
-
 
     public Long getId() {
         return id;
     }
 
-
     public void setId(Long id) {
         this.id = id;
     }
-
 
     public String getValue() {
         return value;
     }
 
-
     public void setValue(String value) {
         this.value = value;
     }
-
 
     public LocalDateTime getRecord_date() {
         return record_date;
     }
 
-
     public void setRecord_date(LocalDateTime record_date) {
         this.record_date = record_date;
     }
-
 
     public boolean isValidated() {
         return isValidated;
     }
 
-
     public void setValidated(boolean isValidated) {
         this.isValidated = isValidated;
     }
-
 
     public String getNotes() {
         return notes;
     }
 
-
     public void setNotes(String notes) {
         this.notes = notes;
     }
-
 
     public Parameter getParameter() {
         return parameter;
     }
 
-
     public void setParameter(Parameter parameter) {
         this.parameter = parameter;
     }
-
 
     public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
-
     public void setOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
-
 }

@@ -33,7 +33,7 @@ public class Orders {
     @JoinColumn(name = "order_status_id", referencedColumnName = "order_status_id")
     private OrderStatus orderStatus;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String notes;
 
     public Orders() {}
