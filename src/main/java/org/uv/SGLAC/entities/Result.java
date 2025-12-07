@@ -1,46 +1,43 @@
 package org.uv.SGLAC.entities;
 
+import jakarta.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import org.springframework.format.annotation.DateTimeFormat;
-
-import jakarta.persistence.*;
-
-//TODO: Verify relationships and constraints
-//note: TestOrder has been changed to OrderStatus
 @Entity
 @Table(name = "results")
 public class Result {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,
-            generator = "result_id_seq")
-    @SequenceGenerator(name = "result_id_seq",
-            sequenceName = "result_id_seq",
-            allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, 
+        generator = "result_id_seq")
+    @SequenceGenerator (name = "result_id_seq",
+        sequenceName = "result_id_seq",
+        initialValue = 1,
+        allocationSize = 1)    
+    @Column(name = "result_id")
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "order_status_id", nullable = false)
-    private OrderStatus orderStatus;
+    @JoinColumn(name = "order_study_id", nullable = false)
+    private OrderStudy orderStudy;
 
     @ManyToOne
     @JoinColumn(name = "parameter_id", nullable = false)
     private Parameter parameter;
 
-    @Column(nullable = false)
-    private String value;
+    @Column(name = "value", nullable = false, precision = 12, scale = 4)
+    private BigDecimal value;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    @Column
-    private LocalDateTime record_date;
+    @Column(name = "record_date", nullable = false)
+    private LocalDateTime recordDate;
 
-    @Column(nullable = false)
-    private boolean isValidated = false;
+    @Column(name = "validated", nullable = false)
+    private Boolean validated;
 
-    @Column(nullable = true, columnDefinition = "TEXT")
+    @Column(name = "notes", columnDefinition = "TEXT")
     private String notes;
-    
+
     public Result() {}
 
     public Long getId() {
@@ -51,36 +48,12 @@ public class Result {
         this.id = id;
     }
 
-    public String getValue() {
-        return value;
+    public OrderStudy getOrderStudy() {
+        return orderStudy;
     }
 
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    public LocalDateTime getRecord_date() {
-        return record_date;
-    }
-
-    public void setRecord_date(LocalDateTime record_date) {
-        this.record_date = record_date;
-    }
-
-    public boolean isValidated() {
-        return isValidated;
-    }
-
-    public void setValidated(boolean isValidated) {
-        this.isValidated = isValidated;
-    }
-
-    public String getNotes() {
-        return notes;
-    }
-
-    public void setNotes(String notes) {
-        this.notes = notes;
+    public void setOrderStudy(OrderStudy orderStudy) {
+        this.orderStudy = orderStudy;
     }
 
     public Parameter getParameter() {
@@ -91,11 +64,35 @@ public class Result {
         this.parameter = parameter;
     }
 
-    public OrderStatus getOrderStatus() {
-        return orderStatus;
+    public BigDecimal getValue() {
+        return value;
     }
 
-    public void setOrderStatus(OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
+    public void setValue(BigDecimal value) {
+        this.value = value;
+    }
+
+    public LocalDateTime getRecordDate() {
+        return recordDate;
+    }
+
+    public void setRecordDate(LocalDateTime recordDate) {
+        this.recordDate = recordDate;
+    }
+
+    public Boolean getValidated() {
+        return validated;
+    }
+
+    public void setValidated(Boolean validated) {
+        this.validated = validated;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 }

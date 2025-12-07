@@ -4,7 +4,7 @@ package org.uv.SGLAC.entities;
 public enum OrderStatus {
     CREATED,       
     IN_PROGRESS,
-    READY,
+    COMPLETED,
     SENT,
     CANCELLED   
 }

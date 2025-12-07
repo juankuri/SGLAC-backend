@@ -1,5 +1,7 @@
 package org.uv.SGLAC.entities;
 
+import java.io.Serializable;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -8,18 +10,18 @@ import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
-//TODO: convert to Entity and add to data model diagram
 @Table
 @Entity
-public class Role {
+public class Role implements Serializable{
     
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, 
-        generator = "patient_id_seq")
-    @SequenceGenerator (name = "patient_id_seq",
-        sequenceName = "patient_id_seq",
+        generator = "role_id_seq")
+    @SequenceGenerator (name = "role_id_seq",
+        sequenceName = "role_id_seq",
         initialValue = 1,
         allocationSize = 1)
+    @Column(name = "role_id")
     private Long id;
 
     @Column(nullable = false)

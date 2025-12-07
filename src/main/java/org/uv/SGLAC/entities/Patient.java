@@ -11,32 +11,38 @@ import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import java.io.Serializable;
 
-//TODO: Add relationship with User entity
 @Table
 @Entity(name = "patients")
 public class Patient implements Serializable {
 
     @Id
-    @Column
     @GeneratedValue(strategy = GenerationType.SEQUENCE,
             generator = "patient_id_seq")
     @SequenceGenerator(name = "patient_id_seq",
             sequenceName = "patient_id_seq",
             initialValue = 1,
             allocationSize = 1)
+    @Column(name = "patient_id")
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = true)
+    @JoinColumn(
+        name = "user_id",
+        referencedColumnName = "user_id",
+        unique = true,
+        nullable = false
+    )
     private User user;    
 
     @Column(unique = true, nullable = false)
     private String recordNumber; //it works as a number to identify someone in the medical field (numero de expediente clinico)
 
-    public Patient(Long id, User user, String recordNumber) {
-        this.id = id;
+    public Patient(User user, String recordNumber) {
         this.user = user;
         this.recordNumber = recordNumber;
+    }
+
+    public Patient() {
     }
 
     public Long getId() {

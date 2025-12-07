@@ -1,29 +1,31 @@
 package org.uv.SGLAC.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import java.util.List;
 
-//TODO: Add relationships to OrderStudy and StudyParameter entities
-@Table
-@Entity(name="studies")
+@Entity
+@Table(name = "studies")
 public class Study {
+
     @Id
-    @Column
     @GeneratedValue(strategy = GenerationType.SEQUENCE,
             generator = "studies_id_seq")
-    @SequenceGenerator(name = "studies_id_seq",
+    @SequenceGenerator(
+            name = "studies_id_seq",
             sequenceName = "studies_id_seq",
-            initialValue = 1,
-            allocationSize = 1)
+            allocationSize = 1
+    )
+    @Column(name = "study_id")
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
+
+    @OneToMany(mappedBy = "study")
+    private List<OrderStudy> orderStudies;
+
+    @OneToMany(mappedBy = "study")
+    private List<StudyParameter> studyParameters;
 
     public Study() {}
 
@@ -41,5 +43,21 @@ public class Study {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<OrderStudy> getOrderStudies() {
+        return orderStudies;
+    }
+
+    public void setOrderStudies(List<OrderStudy> orderStudies) {
+        this.orderStudies = orderStudies;
+    }
+
+    public List<StudyParameter> getStudyParameters() {
+        return studyParameters;
+    }
+
+    public void setStudyParameters(List<StudyParameter> studyParameters) {
+        this.studyParameters = studyParameters;
     }
 }

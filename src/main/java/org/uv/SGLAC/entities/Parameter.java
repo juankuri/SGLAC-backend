@@ -1,8 +1,8 @@
 package org.uv.SGLAC.entities;
 
 import jakarta.persistence.*;
+import java.util.List;
 
-//TODO: add constraints and relationships to Results, StudyParameter, ParameterRange entities
 @Entity
 @Table(name = "parameters")
 public class Parameter {
@@ -13,13 +13,23 @@ public class Parameter {
     @SequenceGenerator(name = "parameter_id_seq",
             sequenceName = "parameter_id_seq",
             allocationSize = 1)
+    @Column(name = "parameter_id")
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 128)
     private String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 50)
     private String unit;
+
+    @OneToMany(mappedBy = "parameter")
+    private List<StudyParameter> studyParameters;
+
+    @OneToMany(mappedBy = "parameter")
+    private List<ParameterRange> parameterRanges;
+
+    @OneToMany(mappedBy = "parameter")
+    private List<Result> results;
 
     public Parameter() {}
 
@@ -45,5 +55,29 @@ public class Parameter {
 
     public void setUnit(String unit) {
         this.unit = unit;
+    }
+
+    public List<StudyParameter> getStudyParameters() {
+        return studyParameters;
+    }
+
+    public void setStudyParameters(List<StudyParameter> studyParameters) {
+        this.studyParameters = studyParameters;
+    }
+
+    public List<ParameterRange> getParameterRanges() {
+        return parameterRanges;
+    }
+
+    public void setParameterRanges(List<ParameterRange> parameterRanges) {
+        this.parameterRanges = parameterRanges;
+    }
+
+    public List<Result> getResults() {
+        return results;
+    }
+
+    public void setResults(List<Result> results) {
+        this.results = results;
     }
 }
