@@ -30,7 +30,7 @@ public class OrderStudy implements Serializable{
     @ManyToOne
     @JoinColumn(
             name = "study_id",
-            referencedColumnName = "order_id",
+            referencedColumnName = "study_id",
             nullable = false
     )
     private Study study;
