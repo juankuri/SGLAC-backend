@@ -56,9 +56,10 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Usuario debe ser mayor de 18 años");
         }
         Role role;
+
         if (user.getRole() != null && user.getRole().getId() != null) {
             role = roleRepository.findById(user.getRole().getId())
-                    .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+                    .orElseThrow(() -> new RuntimeException("Rol no encontrado en BD"));
         } else {
             role = roleRepository.findByName("USER")
                     .orElseThrow(() -> new RuntimeException("Rol USER no existe en BD"));
