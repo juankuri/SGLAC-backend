@@ -74,8 +74,8 @@ public class User implements Serializable {
     @Column(name = "phone_number", unique = true, length = 20)
     private String phoneNumber;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "role_id", referencedColumnName = "role_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
     @Embedded
@@ -190,6 +190,22 @@ public class User implements Serializable {
 
     public void setJoined(LocalDateTime joined) {
         this.joined = joined;
+    }
+
+    public Role getRole() {
+    return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
     }
     
 }

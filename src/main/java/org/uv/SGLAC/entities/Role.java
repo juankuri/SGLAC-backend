@@ -10,7 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
-@Table
+@Table(name = "roles") 
 @Entity
 public class Role implements Serializable{
     
@@ -24,7 +24,7 @@ public class Role implements Serializable{
     @Column(name = "role_id")
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false,  unique = true)
     private String name;
 
     public Role() {}
