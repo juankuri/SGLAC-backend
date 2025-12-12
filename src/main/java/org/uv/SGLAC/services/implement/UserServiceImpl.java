@@ -81,34 +81,47 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll();
     }
 
+    //TODO: Make generic method to update any user regardless its roel
     @Override
-    public User updateUser(Long id, User u) {
-        User s = getUser(id);
-        if (u.getUsername() != null && !u.getUsername().equals(s.getUsername()) && userRepository.findByUsername(u.getUsername()).isPresent()) {
-            throw new RuntimeException("Nombre de usuario ya registrado");
+    @Transactional
+    public User updateUser(Long id, User data) {
+
+        User user = getUser(id); 
+
+        if (data.getUsername() != null && !data.getUsername().equals(user.getUsername())) {
+            if (userRepository.findByUsername(data.getUsername()).isPresent()) {
+                throw new RuntimeException("Nombre de usuario ya registrado");
+            }
+            user.setUsername(data.getUsername());
         }
-        if (u.getEmail() != null && !u.getEmail().equals(s.getEmail()) && userRepository.findByEmail(u.getEmail()).isPresent()) {
-            throw new RuntimeException("Email ya registrado");
+
+        if (data.getEmail() != null && !data.getEmail().equals(user.getEmail())) {
+            if (userRepository.findByEmail(data.getEmail()).isPresent()) {
+                throw new RuntimeException("Email ya registrado");
+            }
+            user.setEmail(data.getEmail());
         }
-        s.setNames(u.getNames() != null ? u.getNames() : s.getNames());
-        s.setLastname(u.getLastname() != null ? u.getLastname() : s.getLastname());
-        s.setUsername(u.getUsername() != null ? u.getUsername() : s.getUsername());
-        s.setEmail(u.getEmail() != null ? u.getEmail() : s.getEmail());
-        if (u.getPassword() != null) {
-            if (!passwdPattern.matcher(u.getPassword()).matches()) {
+
+        if (data.getPhoneNumber() != null && !data.getPhoneNumber().equals(user.getPhoneNumber())) {
+            if (userRepository.findByPhoneNumber(data.getPhoneNumber()).isPresent()) {
+                throw new RuntimeException("Número telefónico ya registrado");
+            }
+            user.setPhoneNumber(data.getPhoneNumber());
+        }
+
+        if (data.getNames() != null) user.setNames(data.getNames());
+        if (data.getLastname() != null) user.setLastname(data.getLastname());
+        if (data.getSex() != null) user.setSex(data.getSex());
+        if (data.getDateOfBirth() != null) user.setDateOfBirth(data.getDateOfBirth());
+
+        if (data.getPassword() != null && !data.getPassword().isBlank()) {
+            if (!passwdPattern.matcher(data.getPassword()).matches()) {
                 throw new RuntimeException("Contraseña no válida");
             }
-            s.setPassword(encoder.encode(u.getPassword()));
+            user.setPassword(encoder.encode(data.getPassword()));
         }
-        s.setPhoneNumber(u.getPhoneNumber() != null ? u.getPhoneNumber() : s.getPhoneNumber());
-        s.setAddress(u.getAddress() != null ? u.getAddress() : s.getAddress());
-        s.setSex(u.getSex() != null ? u.getSex() : s.getSex());
-        s.setDateOfBirth(u.getDateOfBirth() != null ? u.getDateOfBirth() : s.getDateOfBirth());
-        if (u.getRole() != null && u.getRole().getId() != null) {
-            Role role = roleRepository.findById(u.getRole().getId()).orElseThrow(() -> new RuntimeException("Rol no encontrado"));
-            s.setRole(role);
-        }
-        return userRepository.save(s);
+
+        return userRepository.save(user);
     }
 
     @Override
