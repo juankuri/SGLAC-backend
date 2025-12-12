@@ -2,6 +2,7 @@ package org.uv.SGLAC.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.uv.SGLAC.dtos.PatientCreateDTO;
 import org.uv.SGLAC.entities.Patient;
 import org.uv.SGLAC.services.PatientService;
 import java.util.List;
@@ -14,7 +15,7 @@ public class PatientController {
     private PatientService patientService;
 
     @PostMapping
-    public Patient create(@RequestBody Patient patient) {
+    public Patient create(@RequestBody PatientCreateDTO patient) {
         return patientService.create(patient);
     }
 

@@ -1,12 +1,18 @@
 package org.uv.SGLAC.services.implement;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import org.uv.SGLAC.dtos.PatientCreateDTO;
 import org.uv.SGLAC.entities.Patient;
+import org.uv.SGLAC.entities.Role;
 import org.uv.SGLAC.entities.User;
 import org.uv.SGLAC.repositories.PatientRepository;
+import org.uv.SGLAC.repositories.RoleRepository;
 import org.uv.SGLAC.repositories.UserRepository;
 import org.uv.SGLAC.services.PatientService;
 
@@ -16,28 +22,51 @@ public class PatientServiceImpl implements PatientService {
 
     private final PatientRepository patientRepository;
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    public PatientServiceImpl(PatientRepository patientRepository, UserRepository userRepository) {
+    public PatientServiceImpl(PatientRepository patientRepository, UserRepository userRepository, RoleRepository roleRepository) {
         this.patientRepository = patientRepository;
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
     }
 
     @Override
-    public Patient create(Patient patient) {
-        if (patient.getUser() == null || patient.getUser().getId() == null)
-            throw new IllegalArgumentException("User requerido");
+    public Patient create(PatientCreateDTO dto) {
+        if (userRepository.findByUsername(dto.user().username()).isPresent())
+            throw new RuntimeException("Username already exists");
 
-        User user = userRepository.findById(patient.getUser().getId())
-                .orElseThrow(() -> new EntityNotFoundException("User no encontrado"));
+        if (userRepository.findByEmail(dto.user().email()).isPresent())
+            throw new RuntimeException("Email already exists");
 
+        if (dto.user().phoneNumber() != null &&
+            userRepository.findByPhoneNumber(dto.user().phoneNumber()).isPresent())
+            throw new RuntimeException("Phone number already exists");
 
-        if (patientRepository.findByUserId(user.getId()).isPresent())
-            throw new RuntimeException("Este usuario ya está registrado como paciente");
+        if (patientRepository.findByRecordNumber(dto.recordNumber()).isPresent())
+            throw new RuntimeException("Record number already exists");
 
-        if (patientRepository.findByRecordNumber(patient.getRecordNumber()).isPresent())
-            throw new RuntimeException("El número de registro ya existe");
+        Role role = roleRepository.findById(dto.user().roleId())
+                .orElseThrow(() -> new RuntimeException("Role not found"));
 
+        User user = new User();
+        user.setNames(dto.user().names());
+        user.setLastname(dto.user().lastname());
+        user.setUsername(dto.user().username());
+        user.setEmail(dto.user().email());
+        user.setPassword(passwordEncoder.encode(dto.user().password()));
+        user.setPhoneNumber(dto.user().phoneNumber());
+        user.setSex(dto.user().sex());
+        user.setDateOfBirth(dto.user().dateOfBirth());
+        user.setRole(role);
+        user.setJoined(LocalDateTime.now());
+
+        user = userRepository.save(user);
+
+        Patient patient = new Patient();
+        patient.setRecordNumber(dto.recordNumber());
         patient.setUser(user);
+
         return patientRepository.save(patient);
     }
 

@@ -1,11 +1,12 @@
 package org.uv.SGLAC.services;
 
+import org.uv.SGLAC.dtos.PatientCreateDTO;
 import org.uv.SGLAC.entities.Patient;
 import java.util.List;
 
 public interface PatientService {
 
-    Patient create(Patient patient);
+    Patient create(PatientCreateDTO patient);
 
     Patient update(Long id, Patient patient);
 
