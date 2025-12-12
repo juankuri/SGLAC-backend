@@ -61,8 +61,8 @@ public class UserServiceImpl implements UserService {
             role = roleRepository.findById(user.getRole().getId())
                     .orElseThrow(() -> new RuntimeException("Rol no encontrado en BD"));
         } else {
-            role = roleRepository.findByName("USER")
-                    .orElseThrow(() -> new RuntimeException("Rol USER no existe en BD"));
+            role = roleRepository.findByName("PATIENT")
+                    .orElseThrow(() -> new RuntimeException("Rol PATIENT no existe en BD"));
         }
         user.setRole(role);
         user.setPassword(encoder.encode(user.getPassword()));

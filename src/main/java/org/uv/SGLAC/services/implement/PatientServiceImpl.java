@@ -49,13 +49,6 @@ public class PatientServiceImpl implements PatientService {
         if (patient.getRecordNumber() != null && !patient.getRecordNumber().isBlank())
             existing.setRecordNumber(patient.getRecordNumber());
 
-        // opcionalmente permitir cambiar user
-        if (patient.getUser() != null && patient.getUser().getId() != null) {
-            User user = userRepository.findById(patient.getUser().getId())
-                    .orElseThrow(() -> new EntityNotFoundException("User no encontrado"));
-            existing.setUser(user);
-        }
-
         return patientRepository.save(existing);
     }
 
