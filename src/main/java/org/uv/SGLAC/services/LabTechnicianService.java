@@ -1,11 +1,12 @@
 package org.uv.SGLAC.services;
 
+import org.uv.SGLAC.dtos.LabTechnicianCreateDTO;
 import org.uv.SGLAC.entities.LabTechnician;
 import java.util.List;
 
 public interface LabTechnicianService {
 
-    LabTechnician create(LabTechnician labTechnician);
+    LabTechnician create(LabTechnicianCreateDTO labTechnician);
     
     LabTechnician update(Long id, LabTechnician labTechnician);
     

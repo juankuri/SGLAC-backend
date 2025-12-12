@@ -2,6 +2,7 @@ package org.uv.SGLAC.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.uv.SGLAC.dtos.LabTechnicianCreateDTO;
 import org.uv.SGLAC.entities.LabTechnician;
 import org.uv.SGLAC.services.LabTechnicianService;
 
@@ -15,7 +16,7 @@ public class LabTechnicianController {
     private LabTechnicianService labTechnicianService;
 
     @PostMapping
-    public LabTechnician create(@RequestBody LabTechnician labTechnician) {
+    public LabTechnician create(@RequestBody LabTechnicianCreateDTO labTechnician) {
         return labTechnicianService.create(labTechnician);
     }
 
