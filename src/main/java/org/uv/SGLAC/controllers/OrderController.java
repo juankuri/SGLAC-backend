@@ -5,8 +5,10 @@ import org.springframework.web.bind.annotation.*;
 import org.uv.SGLAC.entities.Order;
 import org.uv.SGLAC.services.OrderService;
 
+import org.uv.SGLAC.dtos.OrderRequestDTO;
+import org.uv.SGLAC.dtos.OrderResponseDTO;
+
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/orders")
@@ -16,12 +18,12 @@ public class OrderController {
     private OrderService orderService;
 
     @PostMapping
-    public Order saveOrder(@RequestBody Order order) {
-        return orderService.saveOrder(order);
+    public OrderResponseDTO create(@RequestBody OrderRequestDTO orderDTO) { //No cambiar!
+        return orderService.create(orderDTO);
     }
 
     @GetMapping("/{id}")
-    public Optional<Order> getOrderById(@PathVariable Long id) {
+    public OrderResponseDTO getOrderById(@PathVariable Long id) {//No cambiar!
         return orderService.getOrderById(id);
     }
 

@@ -1,17 +1,18 @@
 package org.uv.SGLAC.services;
 
+import org.uv.SGLAC.dtos.OrderRequestDTO;
+import org.uv.SGLAC.dtos.OrderResponseDTO;
 import org.uv.SGLAC.entities.Order;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface OrderService {
 
-    Order saveOrder(Order order);
+    OrderResponseDTO create(OrderRequestDTO req); //No cambiar!
 
     List<Order> getAllOrders();
 
-    Optional<Order> getOrderById(Long id);
+    OrderResponseDTO getOrderById(Long id); //No cambiar!
 
     Order updateOrder(Order order);
 
