@@ -3,11 +3,14 @@ package org.uv.SGLAC.services.implement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.uv.SGLAC.entities.OTPCode;
+import org.uv.SGLAC.entities.User;
 import org.uv.SGLAC.repositories.OTPCodeRepository;
+import org.uv.SGLAC.services.MailService;
 import org.uv.SGLAC.services.OTPCodeService;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OTPCodeServiceImpl implements OTPCodeService {
@@ -15,22 +18,30 @@ public class OTPCodeServiceImpl implements OTPCodeService {
     @Autowired
     private OTPCodeRepository otpCodeRepository;
 
+    @Autowired
+    private final MailService mailService;
+
+    public OTPCodeServiceImpl(OTPCodeRepository otpCodeRepository, MailService mailService) {
+        this.otpCodeRepository = otpCodeRepository;
+        this.mailService = mailService;
+    }
+
     @Override
-    public OTPCode generateOTP(OTPCode otpCode) {
-    
-        if (otpCode.getUser() == null) {
-            throw new RuntimeException("El OTP debe estar asociado a un usuario");
-        }
-        // Configurar fecha de creación y expiración si no vienen
-        if (otpCode.getCreation_date() == null) {
-            otpCode.setCreation_date(LocalDateTime.now());
-        }
-        if (otpCode.getExp_date() == null) {
-            //5 min de validez
-            otpCode.setExp_date(LocalDateTime.now().plusMinutes(5));
-        }
-        otpCode.setUsed(false);
-        return otpCodeRepository.save(otpCode);
+    public OTPCode generateOTP(User user) {
+        String code = String.valueOf((int) (Math.random() * 900000) + 100000);
+
+        OTPCode otp = new OTPCode();
+        otp.setUser(user);
+        otp.setCode(code);
+        otp.setCreation_date(LocalDateTime.now());
+        otp.setExp_date(LocalDateTime.now().plusMinutes(5));
+        otp.setUsed(false);
+        otp.setMachine("default");
+
+        OTPCode saved = otpCodeRepository.save(otp);
+
+        mailService.sendOTP(code, user.getEmail());
+        return saved;
     }
 
     @Override
@@ -66,5 +77,20 @@ public class OTPCodeServiceImpl implements OTPCodeService {
         OTPCode otp = otpCodeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("OTP no encontrado"));
         otpCodeRepository.delete(otp);
+    }
+
+    @Override
+    public boolean validateOTP(User user, String code) {
+        Optional<OTPCode> otpOpt = otpCodeRepository
+                .findFirstByUserAndCodeAndUsedFalseAndExpDateAfter(user, code, LocalDateTime.now());
+
+        if (otpOpt.isPresent()) {
+            OTPCode otp = otpOpt.get();
+            otp.setUsed(true);
+            otpCodeRepository.save(otp);
+            return true;
+        }
+
+        return false;
     }
 }

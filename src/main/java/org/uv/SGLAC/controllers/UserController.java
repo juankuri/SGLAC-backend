@@ -1,10 +1,12 @@
 package org.uv.SGLAC.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.uv.SGLAC.entities.User;
 import org.uv.SGLAC.services.UserService;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
@@ -29,8 +31,24 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public User update(@PathVariable Long id, @RequestBody User user) {
-        return userService.updateUser(id, user);
+    public ResponseEntity<User> put(@RequestBody User user, @PathVariable Long id) {
+        Optional<User> optUser = userService.findById(id);
+
+        if (optUser.isPresent()) {
+            User updUser = optUser.get();
+            updUser.setNames(user.getNames());
+            updUser.setLastname(user.getLastname());
+            updUser.setUsername(user.getUsername());
+            updUser.setEmail(user.getEmail());
+            updUser.setPassword(user.getPassword());
+            updUser.setPhoneNumber(user.getPhoneNumber());
+            updUser.setDateOfBirth(user.getDateOfBirth());
+
+            userService.createUser(updUser);
+            return ResponseEntity.ok(updUser);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/{id}")
