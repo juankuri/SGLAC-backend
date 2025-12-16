@@ -71,4 +71,5 @@ public class OrderResponseDTO {
     public void setStudies(List<OrderStudyResponseDTO> studies) {
         this.studies = studies;
     }
+
 }

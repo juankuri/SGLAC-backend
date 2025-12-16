@@ -3,38 +3,25 @@ package org.uv.SGLAC.entities;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
-
+import java.util.ArrayList;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "orders")
-public class Order implements Serializable{
+public class Order implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,
-            generator = "order_id_seq")
-    @SequenceGenerator(
-            name = "order_id_seq",
-            sequenceName = "order_id_seq",
-            allocationSize = 1
-    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "order_id_seq")
+    @SequenceGenerator(name = "order_id_seq", sequenceName = "order_id_seq", allocationSize = 1)
     @Column(name = "order_id")
     private Long id;
 
     @ManyToOne(optional = false)
-    @JoinColumn(
-            name = "patient_id",
-            referencedColumnName = "patient_id",
-            nullable = false
-    )
+    @JoinColumn(name = "patient_id", referencedColumnName = "patient_id", nullable = false)
     private Patient patient;
 
     @ManyToOne(optional = false)
-    @JoinColumn(
-            name = "lab_technician_id",
-            referencedColumnName = "lab_technician_id",
-            nullable = false
-    )
+    @JoinColumn(name = "lab_technician_id", referencedColumnName = "lab_technician_id", nullable = false)
     private LabTechnician labTechnician;
 
     @Column(name = "request_date_time", nullable = false, updatable = false)
@@ -47,20 +34,34 @@ public class Order implements Serializable{
     @Column(columnDefinition = "TEXT")
     private String notes;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<OrderStudy> orderStudies;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<OrderStudy> orderStudies = new ArrayList<>();
 
-    public Order() {}
+    public Order() {
+    }
 
-
-
-    public Order(Patient patient, LabTechnician labTechnician, LocalDateTime requestDateTime, String notes, List<OrderStudy> orderStudies) {
+    public Order(Patient patient, LabTechnician labTechnician, LocalDateTime requestDateTime, String notes,
+            List<OrderStudy> orderStudies) {
         this.patient = patient;
         this.labTechnician = labTechnician;
         this.requestDateTime = requestDateTime;
         this.status = OrderStatus.CREATED;
         this.notes = notes;
         this.orderStudies = orderStudies;
+    }
+
+    // por si acaso
+    public void addOrderStudy(OrderStudy orderStudy) {
+        if (orderStudies == null) {
+            orderStudies = new ArrayList<>();
+        }
+        orderStudies.add(orderStudy);
+        orderStudy.setOrder(this);
+    }
+
+    public void removeOrderStudy(OrderStudy orderStudy) {
+        orderStudies.remove(orderStudy);
+        orderStudy.setOrder(null);
     }
 
     public Long getId() {
@@ -122,6 +123,6 @@ public class Order implements Serializable{
 
     public void setId(Long id) {
         this.id = id;
-    } 
-    
+    }
+
 }
