@@ -10,6 +10,7 @@ import org.uv.SGLAC.services.*;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -163,5 +164,20 @@ public class UserServiceImpl implements UserService {
         otp.setUsed(true);
         otpCodeRepository.save(otp);
         return true;
+    }
+
+    @Override
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id);
+    }
+
+    @Override
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public boolean checkPassword(User user, String password) {
+        return encoder.matches(password, user.getPassword());
     }
 }

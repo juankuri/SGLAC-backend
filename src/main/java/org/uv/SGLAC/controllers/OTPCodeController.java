@@ -13,10 +13,10 @@ public class OTPCodeController {
     @Autowired
     private OTPCodeService otpCodeService;
 
-    @PostMapping
-    public OTPCode generateOTP(@RequestBody OTPCode otpCode) {
-        return otpCodeService.generateOTP(otpCode);
-    }
+    // @PostMapping
+    // public OTPCode generateOTP(@RequestBody OTPCode otpCode) {
+    //     return otpCodeService.generateOTP(otpCode);
+    // }
 
     @GetMapping("/{id}")
     public OTPCode getById(@PathVariable Long id) {
