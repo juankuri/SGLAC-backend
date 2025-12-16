@@ -1,6 +1,5 @@
 package org.uv.SGLAC.services.implement;
 
-import org.springframework.security.core.context.ObservationSecurityContextChangedListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.uv.SGLAC.dtos.LabTechnicianDTO;
@@ -63,14 +62,13 @@ public class OrderServiceImpl implements OrderService {
         if (orderDTO.getPatientId() == null) {
             throw new RuntimeException("La orden debe tener un paciente asignado.");
         }
-
         if (orderDTO.getLabTechnicianId() == null) {
             throw new RuntimeException("La orden debe tener un técnico asignado.");
         }
-
         if (orderDTO.getStudies() == null || orderDTO.getStudies().isEmpty()) {
             throw new RuntimeException("La orden debe contener al menos un estudio.");
         }
+
         Patient patient = patientRepository.findById(orderDTO.getPatientId())
                 .orElseThrow(() -> new RuntimeException("Paciente no encontrado"));
 
@@ -83,111 +81,38 @@ public class OrderServiceImpl implements OrderService {
         order.setNotes(orderDTO.getNotes());
         order.setStatus(OrderStatus.CREATED);
         order.updateRequestDateTimeToNow();
-        order.setOrderStudies(new ArrayList<>());
-        
+
         for (OrderStudyRequestDTO s : orderDTO.getStudies()) {
-
             Study study = studyRepository.findById(s.getStudyId())
-                    .orElseThrow(() -> new RuntimeException("Estudio no encontrado con ID: " + s.getStudyId()));
+                    .orElseThrow(() -> new RuntimeException("Estudio no encontrado"));
 
-            OrderStudy os = new OrderStudy();
-            os.setOrder(order);
-            os.setStudy(study);
-            os.setStatus(OrderStatus.CREATED);
+            OrderStudy orderStudy = new OrderStudy();
+            orderStudy.setStudy(study);
+            orderStudy.setStatus(OrderStatus.CREATED);
 
-            order.addOrderStudy(os);
-
+            order.addOrderStudy(orderStudy);
         }
 
-        Order savedOrder = orderRepository.save(order);
-
-        // Entity a ResponseDTO
-
-        OrderResponseDTO response = new OrderResponseDTO();
-        response.setId(savedOrder.getId());
-        response.setStatus(savedOrder.getStatus());
-        response.setNotes(savedOrder.getNotes());
-        response.setRequestDateTime(savedOrder.getRequestDateTime());
-
-        // Para el paciente
-        PatientDTO patientDTO = new PatientDTO();
-        patientDTO.setId(savedOrder.getPatient().getId());
-        patientDTO.setFullName(savedOrder.getPatient().getUser().getNames());
-        response.setPatient(patientDTO);
-
-        // Para el laboratodista
-        LabTechnicianDTO technicianDTO = new LabTechnicianDTO();
-        technicianDTO.setId(savedOrder.getLabTechnician().getId());
-        technicianDTO.setFullName(savedOrder.getLabTechnician().getUser().getNames());
-        response.setLabTechnician(technicianDTO);
-
-        // Para los estudios
-        response.setStudies(
-                savedOrder.getOrderStudies().stream().map(os -> {
-
-                    OrderStudyResponseDTO s = new OrderStudyResponseDTO();
-                    s.setId(os.getId());
-                    s.setStatus(os.getStatus());
-                    s.setNotes(os.getNotes());
-
-                    StudyDTO studyDTO = new StudyDTO();
-                    studyDTO.setId(os.getStudy().getId());
-                    studyDTO.setName(os.getStudy().getName()); // si existe
-
-                    s.setStudy(studyDTO);
-
-                    return s;
-                }).toList());
-
-        return response;
+        return toDTO(orderRepository.save(order));
     }
     // Nota: Hay que convertir el RequestDTO a un ResponseDTO.
 
     @Override
-    public List<Order> getAllOrders() {
-        return orderRepository.findAll();
+    public List<OrderResponseDTO> getAllOrders() {
+        List<OrderResponseDTO> orderDTOs = new ArrayList<>();
+        for (Order order : orderRepository.findAll()) {
+            orderDTOs.add(toDTO(order));
+        }
+        return orderDTOs;
     }
 
     @Override
     public OrderResponseDTO getOrderById(Long id) {
-
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Orden no encontrada con ID: " + id));
-
-        OrderResponseDTO response = new OrderResponseDTO();
-        response.setId(order.getId());
-        response.setRequestDateTime(order.getRequestDateTime());
-        response.setStatus(order.getStatus());
-        response.setNotes(order.getNotes());
-
-        PatientDTO patientDTO = new PatientDTO();
-        patientDTO.setId(order.getPatient().getId());
-        patientDTO.setFullName(order.getPatient().getUser().getNames()); // ajusta a tus campos
-        response.setPatient(patientDTO);
-
-        LabTechnicianDTO technicianDTO = new LabTechnicianDTO();
-        technicianDTO.setId(order.getLabTechnician().getId());
-        technicianDTO.setFullName(order.getLabTechnician().getUser().getNames()); // ajusta
-        response.setLabTechnician(technicianDTO);
-
-        response.setStudies(
-                order.getOrderStudies().stream().map(os -> {
-
-                    OrderStudyResponseDTO s = new OrderStudyResponseDTO();
-                    s.setId(os.getId());
-                    s.setStatus(os.getStatus());
-                    s.setNotes(os.getNotes());
-
-                    StudyDTO studyDTO = new StudyDTO();
-                    studyDTO.setId(os.getStudy().getId());
-                    studyDTO.setName(os.getStudy().getName()); // opcional
-                    s.setStudy(studyDTO);
-
-                    return s;
-                }).toList());
-
-        return response;
+        return toDTO(order);
     }
+
 
     @Override
     public Order updateOrder(Order order) {
@@ -206,7 +131,7 @@ public class OrderServiceImpl implements OrderService {
         existingOrder.setPatient(order.getPatient());
         existingOrder.setLabTechnician(order.getLabTechnician());
         existingOrder.setNotes(order.getNotes());
-        existingOrder.setStatus(order.getStatus());
+        // existingOrder.setStatus(order.getStatus()); SOLO SE PUEDE CAMBIAR EL STATUS CON updateStatus
 
         return orderRepository.save(existingOrder);
     }
@@ -220,5 +145,52 @@ public class OrderServiceImpl implements OrderService {
         }
 
         orderRepository.delete(order);
+    }
+
+    @Override
+    public OrderResponseDTO updateStatus(Long id, OrderStatus status) {
+        Order order = orderRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        order.setStatus(status);
+        orderRepository.save(order);
+
+        return toDTO(order);
+    }
+
+    private OrderResponseDTO toDTO(Order order) {
+        OrderResponseDTO dto = new OrderResponseDTO();
+        dto.setId(order.getId());
+        dto.setRequestDateTime(order.getRequestDateTime());
+        dto.setStatus(order.getStatus());
+        dto.setNotes(order.getNotes());
+        
+        PatientDTO patientDTO = new PatientDTO();
+        patientDTO.setId(order.getPatient().getId());
+        patientDTO.setFullName(order.getPatient().getUser().getNames());
+        dto.setPatient(patientDTO);
+
+        LabTechnicianDTO techDTO = new LabTechnicianDTO();
+        techDTO.setId(order.getLabTechnician().getId());
+        techDTO.setFullName(order.getLabTechnician().getUser().getNames());
+        dto.setLabTechnician(techDTO);
+
+        List<OrderStudyResponseDTO> studies = new ArrayList<>();
+        for (OrderStudy os : order.getOrderStudies()) {
+            OrderStudyResponseDTO studyDTO = new OrderStudyResponseDTO();
+            studyDTO.setId(os.getId());
+            studyDTO.setStatus(os.getStatus());
+            studyDTO.setNotes(os.getNotes());
+
+            StudyDTO study = new StudyDTO();
+            study.setId(os.getStudy().getId());
+            study.setName(os.getStudy().getName());
+
+            studyDTO.setStudy(study);
+            studies.add(studyDTO);
+        }
+        dto.setStudies(studies);
+        
+        return dto;
     }
 }

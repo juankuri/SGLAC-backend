@@ -206,5 +206,9 @@ public class User implements Serializable {
     public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
+
+    public String getName() {
+        return this.names + " " + this.lastname;
+    }
     
 }

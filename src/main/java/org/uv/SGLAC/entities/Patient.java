@@ -69,5 +69,7 @@ public class Patient implements Serializable {
         this.recordNumber = recordNumber;
     }
 
-    
+    public String getName() {
+        return user.getName();
+    }    
 }
