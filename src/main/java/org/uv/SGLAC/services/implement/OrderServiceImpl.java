@@ -7,6 +7,7 @@ import org.uv.SGLAC.dtos.OrderRequestDTO;
 import org.uv.SGLAC.dtos.OrderResponseDTO;
 import org.uv.SGLAC.dtos.OrderStudyRequestDTO;
 import org.uv.SGLAC.dtos.OrderStudyResponseDTO;
+import org.uv.SGLAC.dtos.ParameterDTO;
 import org.uv.SGLAC.dtos.PatientDTO;
 import org.uv.SGLAC.dtos.StudyDTO;
 import org.uv.SGLAC.entities.LabTechnician;
@@ -108,9 +109,52 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderResponseDTO getOrderById(Long id) {
+
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Orden no encontrada con ID: " + id));
-        return toDTO(order);
+
+        OrderResponseDTO response = new OrderResponseDTO();
+        response.setId(order.getId());
+        response.setRequestDateTime(order.getRequestDateTime());
+        response.setStatus(order.getStatus());
+        response.setNotes(order.getNotes());
+
+        PatientDTO patientDTO = new PatientDTO();
+        patientDTO.setId(order.getPatient().getId());
+        patientDTO.setFullName(order.getPatient().getUser().getNames()); 
+        response.setPatient(patientDTO);
+
+        LabTechnicianDTO technicianDTO = new LabTechnicianDTO();
+        technicianDTO.setId(order.getLabTechnician().getId());
+        technicianDTO.setFullName(order.getLabTechnician().getUser().getNames()); 
+        response.setLabTechnician(technicianDTO);
+
+        response.setStudies(
+                order.getOrderStudies().stream().map(os -> {
+
+                    OrderStudyResponseDTO s = new OrderStudyResponseDTO();
+                    s.setId(os.getId());
+                    s.setStatus(os.getStatus());
+                    s.setNotes(os.getNotes());
+
+                    StudyDTO studyDTO = new StudyDTO();
+                    studyDTO.setId(os.getStudy().getId());
+                    studyDTO.setName(os.getStudy().getName()); 
+                    s.setStudy(studyDTO);
+
+                    s.setParameters(
+                            os.getStudy().getStudyParameters().stream().map(p -> {
+                                ParameterDTO pDTO = new ParameterDTO();
+                                pDTO.setId(p.getParameter().getId());
+                                pDTO.setName(p.getParameter().getName());
+                                pDTO.setUnit(p.getParameter().getUnit());
+                                return pDTO;
+                            }).toList());
+
+                    return s;
+                }).toList());
+
+        return response;
     }
 
 
